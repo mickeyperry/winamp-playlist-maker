@@ -1,0 +1,14 @@
+# Windows
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Local scratch / test output
+scratch/
+*.m3u8
+*.m3u
