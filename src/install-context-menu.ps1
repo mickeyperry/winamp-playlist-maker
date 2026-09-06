@@ -70,11 +70,13 @@ $LauncherPath = (Resolve-Path -LiteralPath $LauncherPath).ProviderPath
 $wscriptExe = "$env:SystemRoot\System32\wscript.exe"
 if (-not (Test-Path -LiteralPath $wscriptExe)) { $wscriptExe = 'wscript.exe' }
 
-# %1 is the right-clicked item's path. With MultiSelectModel=Player (set below)
-# Explorer expands it to every selected item where that model is honored; where
-# it is not, the worker recovers the full selection itself and collapses the
+# "%1" is the right-clicked item's path - it MUST be quoted here, since
+# Explorer substitutes it verbatim and paths with spaces would otherwise be
+# split into fragments. With MultiSelectModel=Player (set below) Explorer
+# expands it to every selected item where that model is honored; where it is
+# not, the worker recovers the full selection itself and collapses the
 # duplicate launches (see winamp-playlist.ps1).
-$command = "`"$wscriptExe`" //nologo `"$LauncherPath`" %1"
+$command = "`"$wscriptExe`" //nologo `"$LauncherPath`" `"%1`""
 
 function Register-Verb {
     param([string] $KeyPath, [string] $Label)
