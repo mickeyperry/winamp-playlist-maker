@@ -254,8 +254,24 @@ try {
     # -------------------------------------------------------------- write ----
 
     Set-Progress $ui 'Writing playlist...'
+
+    # If every track sits in one folder, the playlist belongs next to the
+    # music (named after the folder, relative paths). Documents is only the
+    # fallback for selections that span multiple folders.
+    $commonDir = $null
     if ($isSingleFolder) {
-        $baseDir = $singleFolderPath
+        $commonDir = $singleFolderPath
+    } else {
+        $commonDir = Split-Path -Parent $sorted[0]
+        foreach ($f in $sorted) {
+            if (-not [string]::Equals((Split-Path -Parent $f), $commonDir, [StringComparison]::OrdinalIgnoreCase)) {
+                $commonDir = $null; break
+            }
+        }
+    }
+
+    if ($commonDir) {
+        $baseDir = $commonDir
         $playlistPath = Join-Path $baseDir ((Split-Path $baseDir -Leaf) + '.m3u8')
     } else {
         $baseDir = $null

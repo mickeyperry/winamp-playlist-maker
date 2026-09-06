@@ -39,7 +39,10 @@ that menu directly).
   paths relative to it — so the playlist still works if you move the whole
   folder somewhere else.
 - **Add to Winamp Playlist** (files) — works on multiple selected files at
-  once, and saves to `Documents\Winamp Playlists\Playlist_<timestamp>.m3u8`.
+  once. When the selected tracks all sit in one folder the playlist is saved
+  *next to them*, named after that folder, with relative paths. Only a
+  selection spanning multiple folders falls back to
+  `Documents\Winamp Playlists\Playlist_<timestamp>.m3u8`.
 
 Either way, the playlist is then handed to WACUP or Winamp automatically
 (whichever is installed) — it opens with everything queued up, ready to play.
