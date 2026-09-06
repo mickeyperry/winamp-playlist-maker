@@ -7,7 +7,7 @@
     1. Web (nothing downloaded yet) - the repo is fetched to
        %LOCALAPPDATA%\Programs\winamp-playlist-maker and installed from there:
 
-           irm https://raw.githubusercontent.com/mickeyperry/winamp-playlist-maker/main/install.ps1 | iex
+           irm https://raw.githubusercontent.com/mickeyperry/winamp-playlist-maker/master/install.ps1 | iex
 
     2. Local (you cloned or unzipped the repo) - the files are copied to that
        same folder and installed from there, so the menu keeps working after
@@ -33,7 +33,7 @@ $ErrorActionPreference = 'Stop'
 
 $RepoOwner = 'mickeyperry'
 $RepoName  = 'winamp-playlist-maker'
-$RepoRef   = 'main'
+$RepoRef   = 'master'
 
 # ---------------------------------------------------------------- output ----
 

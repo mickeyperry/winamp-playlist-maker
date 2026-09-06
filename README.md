@@ -17,7 +17,7 @@ Either way, an `.m3u8` gets built (naturally sorted, so "Track 2" comes before
 Paste this into PowerShell:
 
 ```powershell
-irm https://raw.githubusercontent.com/mickeyperry/winamp-playlist-maker/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/mickeyperry/winamp-playlist-maker/master/install.ps1 | iex
 ```
 
 Or download / clone the repo and double-click **`Install.cmd`**.
