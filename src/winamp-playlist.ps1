@@ -275,13 +275,18 @@ try {
 
     # ----------------------------------------------------------- hand off ----
 
-    Set-Progress $ui 'Opening player...'
     $player = Find-PlayerExe
-    Close-ProgressUI $ui; $ui = $null
 
     if ($player) {
-        Start-Process -FilePath $player -ArgumentList @('/ADD', "`"$playlistPath`"")
+        # No /ADD: opening the playlist replaces what's loaded and starts
+        # playing it. /ADD only appends silently to the end of the current
+        # playlist without raising the window - it looks like nothing happened.
+        Start-Process -FilePath $player -ArgumentList @("`"$playlistPath`"")
+        Set-Progress $ui ('Done - ' + $sorted.Count + ' track' + $(if ($sorted.Count -ne 1) { 's' }) + ', playing in ' + [System.IO.Path]::GetFileNameWithoutExtension($player).ToUpper() + '.')
+        Start-Sleep -Milliseconds 1500
+        Close-ProgressUI $ui; $ui = $null
     } else {
+        Close-ProgressUI $ui; $ui = $null
         Show-Message -Text "Playlist saved:`n$playlistPath`n`nWACUP/Winamp wasn't found automatically - open the file from there."
     }
 }
