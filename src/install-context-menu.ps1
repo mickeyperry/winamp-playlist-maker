@@ -59,14 +59,22 @@ function Find-PlayerExe {
 $player = Find-PlayerExe
 $icon = if ($player) { "$player,0" } else { $null }
 
-# Explorer runs this command as a 64-bit process, so the literal System32 path
-# is the right one to write. Fall back to the bare name if that copy is missing.
-$psExe = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
-if (-not (Test-Path -LiteralPath $psExe)) { $psExe = 'powershell.exe' }
+# The verb goes through launch-hidden.vbs: wscript.exe is a GUI app with no
+# console of its own, and the .vbs starts the worker with window style 0, so
+# no console window ever flashes (powershell.exe -WindowStyle Hidden still
+# flashes one briefly).
+$LauncherPath = Join-Path (Split-Path -Parent $ScriptPath) 'launch-hidden.vbs'
+if (-not (Test-Path -LiteralPath $LauncherPath)) { throw "Launcher not found: $LauncherPath" }
+$LauncherPath = (Resolve-Path -LiteralPath $LauncherPath).ProviderPath
+
+$wscriptExe = "$env:SystemRoot\System32\wscript.exe"
+if (-not (Test-Path -LiteralPath $wscriptExe)) { $wscriptExe = 'wscript.exe' }
 
 # %1 is the right-clicked item's path. With MultiSelectModel=Player (set below)
-# Explorer expands it to every selected item, not just the first.
-$command = "`"$psExe`" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$ScriptPath`" %1"
+# Explorer expands it to every selected item where that model is honored; where
+# it is not, the worker recovers the full selection itself and collapses the
+# duplicate launches (see winamp-playlist.ps1).
+$command = "`"$wscriptExe`" //nologo `"$LauncherPath`" %1"
 
 function Register-Verb {
     param([string] $KeyPath, [string] $Label)

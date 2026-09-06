@@ -49,14 +49,19 @@ Either way, the playlist is then handed to WACUP or Winamp automatically
 | File | Role |
 |---|---|
 | `install.ps1` | Dual-mode installer — web one-liner or local clone. |
-| `src\winamp-playlist.ps1` | The worker: collects audio files, naturally sorts them, writes the M3U8, launches the player. |
+| `src\launch-hidden.vbs` | Verb entry point: starts the worker with zero console flash (`wscript.exe` has no console, and it launches the child hidden from creation). |
+| `src\winamp-playlist.ps1` | The worker: collects audio files, naturally sorts them, writes the M3U8, launches the player — with a small progress dialog while it works. |
 | `src\install-context-menu.ps1` | Writes the right-click entries into `HKCU`, one per audio extension plus one for folders. |
 | `src\uninstall-context-menu.ps1` | Removes them. |
 
-Multiple selected files or folders are combined into a single playlist —
-Explorer is told `MultiSelectModel=Player` for these verbs, which is the same
-mechanism media players like VLC use to receive every selected item in one
-invocation instead of launching once per file.
+Multiple selected files or folders are combined into a single playlist.
+Explorer is told `MultiSelectModel=Player` for these verbs, but Explorer does
+not honor that reliably for per-extension verbs — with N files selected it may
+launch the command N times, once per file. The worker defends against that
+twice over: a named mutex plus a recent-run marker collapse the burst so only
+the first process does any work, and that process reads the real, complete
+selection straight from the Explorer window via Shell COM — so it sees all N
+files even when its own command line carried only one.
 
 The player itself is found by checking the usual `WACUP`/`Winamp` install
 locations under Program Files, falling back to the `App Paths` registry
